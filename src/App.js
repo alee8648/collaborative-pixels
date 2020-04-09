@@ -34,7 +34,7 @@ class App extends React.Component {
             this.increaseTime();
             this.startTimer();
             // this.handleTimeIncrease();
-        }, 1000);
+        }, 100);
     }
 
     increaseTime() {
