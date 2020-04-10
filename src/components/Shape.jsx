@@ -1,15 +1,8 @@
 import React, { Component } from 'react';
 
 class Shape extends Component {
-    state = {
-        countAtCreation: 0,
-        currentCount: 0,
-    };
-
     constructor() {
         super(...arguments);
-        this.state.countAtCreation = this.props.count;
-        this.state.currentCount = this.props.count;
     }
 
     getClass() {
@@ -17,19 +10,13 @@ class Shape extends Component {
     }
 
     getStyles() {
+        let color = `hsl(${this.props.value}, 80%, 50%)`;
         return {
-            backgroundColor: `hsl(${
-                (this.state.currentCount + (this.props.time - 99)) * (360 / 19)
-            }, 100%, 60%)`,
+            backgroundColor: color,
+            borderColor: color,
             // backgroundColor : `rgba(155,155,${this.state.countAtCreation * 4})`
         };
     }
-
-    handleMouseEnter = () => {
-        this.setState({
-            currentCount: this.state.currentCount + 1,
-        });
-    };
 
     render() {
         // console.log('---- render running - Shape', this.props);
@@ -39,10 +26,13 @@ class Shape extends Component {
                 <button
                     className={this.getClass()}
                     style={this.getStyles()}
-                    onMouseEnter={this.handleMouseEnter}
-                >
-                    {this.state.currentCount}
-                </button>
+                    onMouseEnter={() =>
+                        this.props.onColourChange(this.props.count)
+                    }
+                    onMouseDown={() =>
+                        this.props.onColourChange(this.props.count, true)
+                    }
+                ></button>
             </div>
         );
     }

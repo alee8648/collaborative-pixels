@@ -7,58 +7,61 @@ class App extends React.Component {
     // initiativeToAdd = React.createRef();
     state = {
         // initiative: [],
+        matrix: [],
         count: 0,
         time: 0,
+        maxShapes: 1200,
+        mouseDown: false,
     };
 
     constructor() {
         super(...arguments);
-        this.startTimer();
     }
 
     componentDidMount() {
-        // this.initiativeRef = base.syncState(`test-adam/initiative`, {
-        //   context: this,
-        //   state: 'initiative',
-        //   asArray: true // this is super important! Firebase doesn't save any arrays, only objects with indexes as keys
-        // });
+        this.initiativeRef = base.syncState(`pixels/matrix`, {
+            context: this,
+            state: 'matrix',
+            asArray: true, // this is super important! Firebase doesn't save any arrays, only objects with indexes as keys
+            defaultValue: this.state.matrix,
+        });
+
+        if (this.state.matrix.length < this.state.maxShapes) {
+            let newMatrix = [];
+            for (let i = 0; i < this.state.maxShapes; i++) {
+                newMatrix.push(0);
+            }
+            // Uncomment this and run to 'reset' and overwrite and resync the matrix saved on firebase
+            // this.setState({
+            //     matrix: newMatrix,
+            // });
+        }
     }
 
     componentWillUnmount() {
         console.log('unmounting');
-        // base.removeBinding(this.initiativeRef);
+        base.removeBinding(this.initiativeRef);
     }
-
-    startTimer() {
-        setTimeout(() => {
-            this.increaseTime();
-            this.startTimer();
-            // this.handleTimeIncrease();
-        }, 100);
-    }
-
-    increaseTime() {
-        this.setState({
-            time: this.state.time + 1,
-        });
-        // console.log(this.state.time);
-    }
-
-    // handleTimeIncrease() {
-    //   // Every {speed}, deal {damage}
-    //   if (this.state.time % this.state.speed < 1) {
-    //     // this.handleIncreaseCount();
-    //   }
-    // }
 
     getShapes() {
-        const shapesArray = [];
+        // (this.state.currentCount + (this.props.time - 99)) * (360 / 19)
 
-        for (let i = 0; i < 200; i++) {
-            shapesArray.push(
-                <Shape key={i} count={i} time={this.state.time} />
+        // for (let i = 0; i < 200; i++) {
+        //     shapesArray.push(
+        //         <Shape key={i} count={i} time={this.state.time} />
+        //     );
+        // }
+
+        const shapesArray = this.state.matrix.map((value, index) => {
+            return (
+                <Shape
+                    key={index}
+                    count={index}
+                    value={value}
+                    onColourChange={this.handleColourChange}
+                />
             );
-        }
+        });
 
         return (
             <div className="shapes__wrapper">
@@ -67,8 +70,39 @@ class App extends React.Component {
         );
     }
 
+    handleColourChange = (index, force) => {
+        console.log('changing colour for', index);
+        if (this.state.mouseDown || force) {
+            let matrix = [...this.state.matrix];
+            matrix[index] = matrix[index] + 60;
+            this.setState({
+                matrix: matrix,
+            });
+        }
+    };
+
+    handleMouseDown = () => {
+        this.setState({
+            mouseDown: true,
+        });
+    };
+
+    handleMouseUp = () => {
+        this.setState({
+            mouseDown: false,
+        });
+    };
+
     render() {
-        return <div className="App">{this.getShapes()}</div>;
+        return (
+            <div
+                className="App"
+                onMouseDown={this.handleMouseDown}
+                onMouseUp={this.handleMouseUp}
+            >
+                <div className="container"> {this.getShapes()}</div>
+            </div>
+        );
     }
 }
 

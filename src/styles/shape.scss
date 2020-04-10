@@ -6,7 +6,9 @@
 .shapes__wrapper {
 }
 
-$shape-dimension: 5vw;
+$shape-dimension: 30px;
+
+$transition-time: 0.15s;
 
 .shape__wrapper {
     // padding: 0.25vw;
@@ -20,13 +22,17 @@ $shape-dimension: 5vw;
     background-color: aqua;
     text-align: center;
     color: transparent;
-    border: 0;
+    border: solid 1px;
     padding: 0;
-    transition: background-color 0.3s linear, transform 0.3s linear;
+    display: block;
+    transition: background-color $transition-time linear,
+        transform $transition-time linear;
 
     &:hover {
-        transform: scale(1.3);
-        transition: background-color 0.3s linear, transform 0.3s linear;
+        // transform: scale(1.3);
+        transition: background-color $transition-time linear,
+            transform $transition-time linear;
+        border-color: white !important;
     }
 
     &:focus {
