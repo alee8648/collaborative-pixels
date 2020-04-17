@@ -2,8 +2,9 @@ import Rebase from 're-base';
 import firebase from 'firebase';
 import apiKeys from './apiKeys.js';
 
-if (!apiKeys) {
-    const apiKeys = {
+let privateData = {};
+if (process.env.PROD === 'true') {
+    privateData = {
         apiKey: process.env.FIREBASE_API_KEY,
         authDomain: process.env.FIREBASE_AUTH_DOMAIN,
         databaseURL: process.env.FIREBASE_DATABASE_URL,
@@ -12,9 +13,11 @@ if (!apiKeys) {
         messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
         appId: process.env.FIREBASE_APP_ID,
     };
+} else {
+    privateData = { ...apiKeys };
 }
 
-const firebaseApp = firebase.initializeApp({ ...apiKeys });
+const firebaseApp = firebase.initializeApp(privateData);
 
 const base = Rebase.createClass(firebaseApp.database());
 
