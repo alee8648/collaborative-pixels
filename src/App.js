@@ -1,12 +1,10 @@
 import React from 'react';
 import base from './base';
 import Shape from './components/Shape';
+import colors from './data/colors.js';
 
 class App extends React.Component {
-    // nameToAdd = React.createRef();
-    // initiativeToAdd = React.createRef();
     state = {
-        // initiative: [],
         matrix: [],
         count: 0,
         time: 0,
@@ -43,21 +41,21 @@ class App extends React.Component {
         base.removeBinding(this.initiativeRef);
     }
 
+    static getNextColor(index) {
+        let newIndex = index + 1;
+        if (newIndex >= colors.length) {
+            newIndex = 0;
+        }
+        return newIndex;
+    }
+
     getShapes() {
-        // (this.state.currentCount + (this.props.time - 99)) * (360 / 19)
-
-        // for (let i = 0; i < 200; i++) {
-        //     shapesArray.push(
-        //         <Shape key={i} count={i} time={this.state.time} />
-        //     );
-        // }
-
         const shapesArray = this.state.matrix.map((value, index) => {
             return (
                 <Shape
                     key={index}
                     count={index}
-                    value={value}
+                    color={colors[value]}
                     onColourChange={this.handleColourChange}
                 />
             );
@@ -71,10 +69,11 @@ class App extends React.Component {
     }
 
     handleColourChange = (index, force) => {
-        console.log('changing colour for', index);
         if (this.state.mouseDown || force) {
+            console.log('changing colour for', index);
             let matrix = [...this.state.matrix];
-            matrix[index] = matrix[index] + 60;
+            matrix[index] = App.getNextColor(matrix[index]);
+            console.log(matrix[index]);
             this.setState({
                 matrix: matrix,
             });

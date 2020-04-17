@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import colors from '../data/colors.js';
 
 class Shape extends Component {
     constructor() {
@@ -10,11 +11,9 @@ class Shape extends Component {
     }
 
     getStyles() {
-        let color = `hsl(${this.props.value}, 80%, 50%)`;
         return {
-            backgroundColor: color,
-            borderColor: color,
-            // backgroundColor : `rgba(155,155,${this.state.countAtCreation * 4})`
+            backgroundColor: `${this.props.color}`,
+            borderColor: `${this.props.color}`,
         };
     }
 
